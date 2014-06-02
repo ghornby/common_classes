@@ -2,7 +2,6 @@ Project Title: Common Classes
 Auther: Greg Hornby
 ==========================================================
 
-
 Description:
 
 This repository contains C++ code for creating a library of code
