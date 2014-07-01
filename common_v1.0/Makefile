@@ -14,7 +14,7 @@ CC = g++
 
 
 
-COMMON_CLASS_FILES = cmn_algebra.o cmn_logger.o cmn_mutex.o cmn_random.o cmn_string_proc.o cmn_utils.o
+COMMON_CLASS_FILES = cmn_logger.o cmn_mutex.o cmn_random.o cmn_string_proc.o cmn_utils.o
 
 libcmnclass.a:	$(COMMON_CLASS_FILES)
 		ar rcv $(COMMON_CLASS_LIB_VERSION) $(COMMON_CLASS_FILES)
@@ -28,8 +28,6 @@ libcmnclass.a:	$(COMMON_CLASS_FILES)
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<
 
-cmn_algebra.o:	cmn_algebra.h cmn_algebra.cpp
-		$(CC) $(CFLAGS) -c cmn_algebra.cpp
 
 cmn_logger.o:	cmn_logger.h cmn_logger.cpp
 		$(CC) $(CFLAGS) -c cmn_logger.cpp
