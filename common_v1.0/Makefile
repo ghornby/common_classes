@@ -6,7 +6,8 @@ COMMON_CLASS_LIB_VERSION = lib$(COMMON_CLASS_VERSION).a
 
 
 
-OPTFLAGS = -O3 -fforce-addr -fomit-frame-pointer -funroll-loops -frerun-cse-after-loop -frerun-loop-opt
+#OPTFLAGS = -O3 -fforce-addr -fomit-frame-pointer -funroll-loops -frerun-cse-after-loop -frerun-loop-opt
+OPTFLAGS = -O3 -fomit-frame-pointer -funroll-loops
 #OPTFLAGS = -g -Wall
 CFLAGS = $(OPTFLAGS) $(CINCLUDE)
 CC = g++
@@ -26,6 +27,7 @@ libcmnclass.a:	$(COMMON_CLASS_FILES)
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<
+
 
 cmn_logger.o:	cmn_logger.h cmn_logger.cpp
 		$(CC) $(CFLAGS) -c cmn_logger.cpp
