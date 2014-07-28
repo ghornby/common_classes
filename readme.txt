@@ -45,11 +45,13 @@ will be incremented:
 
 License:
 
-This project was created from code developed on my own time and
-also extracted from code developed under DARPA's M3 Program.
-The latter requires code to be released under an open-source
-license and UCSC's Office for Management of Intellectual Property
-has OK'ed the release of such code under the BSD-3 license
+This project was originated before I started work at UCSC
+(in Fall of 2005) and it was created from code developed on
+my own time.  In addition, I also extracted from code developed
+under DARPA's M3 Program and this latter requires code to be
+released under an open-source license and UCSC's Office for
+Management of Intellectual Property has OK'ed the release of
+such code under the BSD-3 license
 (http://opensource.org/licenses/BSD-3-Clause) and the original
 code-based this was extracted from is called, "Collaborative
 Robotic Design System (CoRDS)".
