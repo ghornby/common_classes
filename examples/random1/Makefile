@@ -24,7 +24,7 @@ CC = g++
 
 LINK =  -L$(LIBRARY_ROOT_PATH)/lib \
 	-l$(COMMON_CLASSES_VERSION) \
-	-lm -lstdc++ -lgmp -lgmpxx -pthread
+	-lm -lstdc++
 
 TARGETS = \
 	rand1

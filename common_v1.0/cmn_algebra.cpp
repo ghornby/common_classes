@@ -244,6 +244,67 @@ double angle_btw_babc_2d(double ax, double ay, double bx, double by,
 
 
 
+#ifdef OLD
+double angle_btw_pts2(double ax, double ay, double bx, double by,
+		      double cx, double cy)
+{
+  double bax = ax - bx;
+  double bay = ay - by;
+
+  //  double bcx = cx - bx;
+  //  double bcy = cy - by;
+
+  double bcx = bx - cx;
+  double bcy = by - cy;
+
+  double dot = bax * bcx + bay * bcy;
+  double pcross = bax * bcy - bay * bcx;
+  double angle = atan2(pcross, dot);
+
+  /*
+  cout << ax << ":" << ay << "; " << bx << ":" << by << "; "
+       << cx << ":" << cy << " => " << bax << ":" << bay
+       << ", " << bcx << ":" << bcy << endl;
+  cout << angle << " = atan2(" << pcross << ", " << dot << ")" << endl;
+  */
+  return angle;
+}
+
+
+// Angle between the vectors: AB and CD:
+// This works by moving CD to be BD and calling the above function.
+double angle_btw_pts2(double ax, double ay, double bx, double by,
+		      double cx, double cy, double dx, double dy)
+{
+  double delta_x = bx - cx;
+  double delta_y = by - cy;
+
+  double dx2 = dx + delta_x;
+  double dy2 = dy + delta_y;
+
+  return angle_btw_pts2(ax, ay, bx, by, dx2, dy2);
+}
+#endif
+
+
+
+// Want angle between the two vectors c-p1 and c-p2.
+// Calculate angle as:
+//   a.b = |a||b|cos(theta)
+#ifdef OLD
+double angle_btw_pts(double cx, double cy, double p1x, double p1y,
+		   double p2x, double p2y)
+{
+  double numer = p1x*p2x + p1y*p2y;
+  double denom = sqrt(sqr(p1x)+sqr(p1y)) * sqrt(sqr(p2x)+sqr(p2y));
+
+  if (denom < ANGLE_TOLERANCE)
+    return 0.0;
+  return acos(numer / denom);
+}
+#endif
+
+
 // Returns the angle between the two vectors vec1 and vec2.
 // Calculate angle as:
 //   a.b = |a||b|cos(theta)
@@ -269,6 +330,89 @@ double angle_btw_vec3(double vec1[3], double vec2[3])
 
 
 
+void m4_print(double m[4][4], const char *string)
+{
+  int i, j;
+
+#ifndef PRINT_OFF
+  if (string)
+    cout << string;
+  for (i=0; i<4; i++)
+    {
+      for (j=0; j<4; j++)
+	cout << m[i][j]<<"  ";
+      cout <<endl;
+    }
+#endif
+} 
+
+void sp_m_print(double m[6][6], const char *string)
+{
+  int i, j;
+
+#ifndef PRINT_OFF
+  if (string)
+    cout << string;
+  for (i=0; i<6; i++)
+    {
+      for (j=0; j<6; j++)
+	cout << m[i][j]<<" ";
+      cout << endl;
+    }
+#endif
+} 
+
+void sp_v_print(double v[6], const char *string)
+{
+#ifndef PRINT_OFF
+  int i;
+
+  if (string)
+    cout << string;
+  for (i=0; i<6; i++)
+    cout << v[i]<<"  ";
+  cout << endl;
+#endif
+} 
+
+void v_print(double v[3], const char *string)
+{
+#ifndef PRINT_OFF
+  int i;
+  double l = 0.0;
+
+  if (string)
+    cout << string;
+  for (i=0; i<3; i++)
+    cout << v[i]<<"  ";
+
+  for (i=0; i<3; i++)
+    l += sqr(v[i]);
+  l = sqrt(l);
+  cout << "("<<l<<")"<<endl;
+#endif
+} 
+
+
+void v4_print(double v[4], const char *string)
+{
+#ifndef PRINT_OFF
+  int i;
+  double l = 0.0;
+
+  if (string)
+    cout << string;
+  for (i=0; i<4; i++)
+    cout << v[i]<<"  ";
+
+  for (i=0; i<4; i++)
+    l += sqr(v[i]);
+  l = sqrt(l);
+  cout << "("<<l<<")" << endl;
+#endif
+} 
+
+
 bool vec_norm(double v[3])
 {
   double len;
@@ -286,6 +430,419 @@ double distance2(double p1[2], double p2[2])
   return sqrt(sqr(p1[0] - p2[0]) + sqr(p1[1] - p2[1]));
 }
 
+
+
+void mm3_transpose(double dst[3][3], double src[3][3])
+{
+  for (int i=0; i<3; i++)
+    for (int j=0; j<3; j++)
+      dst[i][j] = src[j][i];
+}
+
+
+double svTv6_mult(double v1[6], double v2[6])
+{
+  int i;
+  double val = 0.0;
+
+  for (i=0; i<3; i++)
+    val += v1[i+3]*v2[i];
+  for (i=3; i<6; i++)
+    val += v1[i-3]*v2[i];
+
+  return val;
+}
+
+double svv6_mult(double v1[6], double v2[6])
+{
+  int i;
+  double val = 0.0;
+
+  for (i=0; i<6; i++)
+    val += v1[i]*v2[i];
+
+  return val;
+}
+
+
+void mm3_copy(double mdst[3][3], double msrc[3][3])
+{
+  mdst[0][0] = msrc[0][0];
+  mdst[0][1] = msrc[0][1];
+  mdst[0][2] = msrc[0][2];
+  mdst[1][0] = msrc[1][0];
+  mdst[1][1] = msrc[1][1];
+  mdst[1][2] = msrc[1][2];
+  mdst[2][0] = msrc[2][0];
+  mdst[2][1] = msrc[2][1];
+  mdst[2][2] = msrc[2][2];
+}
+
+void mm3_copy(int mdst[3][3], const int msrc[3][3])
+{
+  mdst[0][0] = msrc[0][0];
+  mdst[0][1] = msrc[0][1];
+  mdst[0][2] = msrc[0][2];
+  mdst[1][0] = msrc[1][0];
+  mdst[1][1] = msrc[1][1];
+  mdst[1][2] = msrc[1][2];
+  mdst[2][0] = msrc[2][0];
+  mdst[2][1] = msrc[2][1];
+  mdst[2][2] = msrc[2][2];
+}
+
+
+void mmm3_mult(int mdst[3][3], const int mat1[3][3], 
+	       const int mat2[3][3])
+{
+   int i, j, k;
+   int sum;
+
+   for (i=0; i<3; i++) {
+     for (j=0; j<3; j++) {
+       sum = 0;
+       for (k=0; k<3; k++) {
+	 sum += mval(mat1, i, k)*mval(mat2, k, j);
+       }
+       mval(mdst, i, j) = sum;
+     }
+   }
+}
+
+
+
+
+void make_rotx_m3(double angle, double mat[3][3])
+{
+  double cos_ang = cos(angle);
+  double sin_ang = sin(angle);
+
+    mat[0][0] = 1.0;
+    mat[0][1] = 0.0;
+    mat[0][2] = 0.0;
+
+    mat[1][0] = 0.0;
+    mat[1][1] = cos_ang;
+    mat[1][2] = -sin_ang;
+
+    mat[2][0] = 0.0;
+    mat[2][1] = sin_ang;
+    mat[2][2] = cos_ang;
+  }
+
+
+
+  void make_roty_m3(double angle, double mat[3][3])
+  {
+    double cos_ang = cos(angle);
+    double sin_ang = sin(angle);
+
+    mat[0][0] = cos_ang;
+    mat[0][1] = 0.0;
+    mat[0][2] = sin_ang;
+
+    mat[1][0] = 0.0;
+    mat[1][1] = 1.0;
+    mat[1][2] = 0.0;
+
+    mat[2][0] = -sin_ang;
+    mat[2][1] = 0.0;
+    mat[2][2] = cos_ang;
+  }
+
+
+  void make_rotz_m3(double angle, double mat[3][3])
+  {
+    double cos_ang = cos(angle);
+    double sin_ang = sin(angle);
+
+    mat[0][0] = cos_ang;
+    mat[0][1] = -sin_ang;
+    mat[0][2] = 0.0;
+
+    mat[1][0] = sin_ang;
+    mat[1][1] = cos_ang;
+    mat[1][2] = 0.0;
+
+    mat[2][0] = 0.0;
+    mat[2][1] = 0.0;
+    mat[2][2] = 1.0;
+  }
+
+
+void mmm3_mult(double mdst[3][3], double mat1[3][3], 
+	       double mat2[3][3])
+{
+   int i, j, k;
+   double sum;
+
+   for (i=0; i<3; i++) {
+      for (j=0; j<3; j++) {
+	sum = 0.0;
+	for (k=0; k<3; k++) {
+	  sum += mval(mat1, i, k)*mval(mat2, k, j);
+	}
+	mval(mdst, i, j) = sum;
+      }
+   }
+}
+
+
+
+
+
+void mmm_mult(double mdst[4][4], double mat1[4][4], 
+	      double mat2[4][4])
+{
+   int i, j, k;
+   double sum;
+
+   for (i=0; i<4; i++)
+      for (j=0; j<4; j++)
+      {
+	 sum = 0.0;
+	 for (k=0; k<4; k++)
+	    sum += mval(mat1, i, k)*mval(mat2, k, j);
+	 mval(mdst, i, j) = sum;
+      }
+}
+
+void vvm4_mult(double dst[3], double src[3], double mat[4][4])
+{
+  int i, j;
+
+  for (i=0; i<3; i++)
+    {
+      dst[i] = 0.0;
+      for (j=0; j<3; j++)
+	dst[i] += src[j]*mat[j][i];
+    }
+}
+
+void vvTm6_mult(double dst[6], double src[6], double mat[6][6])
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    {
+      dst[i] = 0.0;
+      for (j=0; j<3; j++)
+	dst[i] += src[j+3]*mat[j][i];
+      for (j=3; j<6; j++)
+	dst[i] += src[j-3]*mat[j][i];
+    }
+}
+
+void vvm6_mult(double dst[6], double src[6], double mat[6][6])
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    {
+      dst[i] = 0.0;
+      for (j=0; j<6; j++)
+	dst[i] += src[j]*mat[j][i];
+    }
+}
+
+void vmv_mult(double dst[3], double mat[3][3], double src[3])
+{
+  int i, j;
+
+  for (i=0; i<3; i++)
+    {
+      dst[i] = 0.0;
+      for (j=0; j<3; j++)
+	dst[i] += mat[i][j]*src[j];
+    }
+}
+
+
+void vmv4_mult(double dst[3], double mat[4][4], double src[3])
+{
+  int i, j;
+
+  for (i=0; i<3; i++)
+    {
+      dst[i] = 0.0;
+      for (j=0; j<3; j++)
+	dst[i] += mat[i][j]*src[j];
+    }
+}
+
+
+void vmv443_mult(double dst[4], double mat[4][3], double src[3])
+{
+  int i, j;
+
+  for (i=0; i<4; i++)
+    {
+      dst[i] = 0.0;
+      for (j=0; j<3; j++)
+	dst[i] += mat[i][j]*src[j];
+    }
+}
+
+
+void msm6_mult(double dst[6][6], double sc, double src[6][6])
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    for (j=0; j<6; j++)
+      dst[i][j] = sc * src[i][j];
+}
+
+
+void ms6_mult(double m[6][6], double sc)
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    for (j=0; j<6; j++)
+      m[i][j] = sc*m[i][j];
+}
+
+void ms6_div(double m[6][6], double sc)
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    for (j=0; j<6; j++)
+      m[i][j] = m[i][j]/sc;
+}
+
+void mvv6_mult(double m[6][6], double v1[6], double v2[6])
+{
+  int i, j;
+  /* handle transpose "funny"? : no */
+
+  for (i=0; i<6; i++)
+    for (j=0; j<6; j++)
+      m[i][j] = v1[i]*v2[j];
+}
+
+void vmv6_mult(double dst[6], double mat[6][6], double src[6])
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    {
+      dst[i] = 0.0;
+      for (j=0; j<6; j++)
+	dst[i] += mat[i][j]*src[j];
+    }
+}
+
+void mm6_plus(double d[6][6], double s[6][6])
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    for (j=0; j<6; j++)
+      d[i][j]+=s[i][j];
+}
+
+void mmm6_subt(double d[6][6], double m1[6][6], double m2[6][6])
+{
+  int i, j;
+
+  for (i=0; i<6; i++)
+    for (j=0; j<6; j++)
+      d[i][j]=m1[i][j]-m2[i][j];
+}
+
+void mmm6_mult(double mdst[6][6], double mat1[6][6], 
+	       double mat2[6][6])
+{
+   int i, j, k;
+   double sum;
+
+   for (i=0; i<6; i++)
+      for (j=0; j<6; j++)
+      {
+	 sum = 0.0;
+	 for (k=0; k<6; k++)
+	    sum += mval(mat1, i, k)*mval(mat2, k, j);
+	 mval(mdst, i, j) = sum;
+      }
+}
+
+
+#define ALMOST_ZERO 0.0000001
+
+double line_segment_distance(double seg1_a[3], double seg1_b[3],
+			   double seg2_a[3], double seg2_b[3])
+{
+  double sc, sd, sn, tc, td, tn;
+  double uu, uv, vv, uw, vw, det;
+  double u[3], v[3], w[3];
+
+  vec_subt(u, seg1_b, seg1_a);
+  vec_subt(v, seg2_b, seg2_a);
+  vec_subt(w, seg1_a, seg2_a);
+
+  uu = vec_dot(u, u);
+  uv = vec_dot(u, v);
+  vv = vec_dot(v, v);
+  uw = vec_dot(u, w);
+  vw = vec_dot(v, w);
+  
+  det = uu*vv - sqr(uv);
+  sd = det;
+  td = det;
+
+  if (det < ALMOST_ZERO) {
+    sn = 0.0;
+    sd = 1.0;
+    tn = vw;
+    td = vv;
+  } else {
+    sn = uv*vw - vv*uw;
+    tn = uu*vw - uv*uw;
+    if (sn < 0.0) {
+      sn = 0.0;
+      tn = vw;
+      td = vv;
+    } else if (sn > sd) {
+      sn = sd;
+      tn = vw + uv;
+      td = vv;
+    }
+  }
+
+  if (tn < 0.0) {
+    tn = 0.0;
+    if (-uw < 0.0) {
+      sn = 0.0;
+    } else if (-uw > uu) {
+      sn = sd;
+    } else {
+      sn = -uw;
+      sd = uu;
+    }
+  } else if (tn > td) {
+    tn = td;
+    if (uv-uw < 0.0) {
+      sn = 0.0;
+    } else if (uv-uw > uu) {
+      sn = sd;
+    } else {
+      sn = uv-uw;
+      sd = uu;
+    }
+  }
+
+  sc = (absv(sn) < ALMOST_ZERO ? 0.0 : sn / sd);
+  tc = (absv(tn) < ALMOST_ZERO ? 0.0 : tn / td);
+
+  vs_mult(u, sc);
+  vs_mult(v, tc);
+  vec_plus(w, w, u);
+  vec_subt(w, w, v);
+
+  return vec_dot(w, w);
+}
 
 
 // This function is adapted from geom.cpp in ODE, which

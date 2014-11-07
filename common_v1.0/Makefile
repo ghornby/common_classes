@@ -10,12 +10,15 @@ COMMON_CLASS_LIB_VERSION = lib$(COMMON_CLASS_VERSION).a
 #OPTFLAGS = -O3 -fforce-addr -fomit-frame-pointer -funroll-loops -frerun-cse-after-loop -frerun-loop-opt
 OPTFLAGS = -O3 -fomit-frame-pointer -funroll-loops
 #OPTFLAGS = -g -Wall
+
+
+CINCLUDE = -I/usr/local/include
 CFLAGS = $(OPTFLAGS) $(CINCLUDE)
 CC = g++
 
 
 
-COMMON_CLASS_FILES = cmn_algebra.o cmn_logger.o cmn_mutex.o cmn_random.o cmn_string_proc.o cmn_utils.o
+COMMON_CLASS_FILES = cmn_algebra.o cmn_logger.o cmn_matrix.o cmn_mutex.o cmn_random.o cmn_string_proc.o cmn_utils.o
 
 libcmnclass.a:	$(COMMON_CLASS_FILES)
 		ar rcv $(COMMON_CLASS_LIB_VERSION) $(COMMON_CLASS_FILES)
@@ -35,6 +38,9 @@ cmn_algebra.o:	cmn_algebra.h cmn_algebra.cpp
 
 cmn_logger.o:	cmn_logger.h cmn_logger.cpp
 		$(CC) $(CFLAGS) -c cmn_logger.cpp
+
+cmn_matrix.o:	cmn_matrix.h cmn_matrix.cpp
+		$(CC) $(CFLAGS) -c cmn_matrix.cpp
 
 cmn_mutex.o:	cmn_mutex.h cmn_mutex.cpp
 		$(CC) $(CFLAGS) -c cmn_mutex.cpp
